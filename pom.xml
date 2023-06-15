@@ -9,14 +9,16 @@
 		<version>2.3.3.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.victorpereira</groupId>
-	<artifactId>financial-control</artifactId>
+	<groupId>com.projeto</groupId>
+	<artifactId>controlefinanceiro</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>financial-control</name>
 	<description>Financial Control App</description>
 
 	<properties>
 		<java.version>11</java.version>
+		<maven.compiler.release>11</maven.compiler.release>
+		<maven.compiler.compilerArgs>--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</maven.compiler.compilerArgs>
 	</properties>
 
 	<dependencies>
