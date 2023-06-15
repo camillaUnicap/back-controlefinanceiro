@@ -36,9 +36,9 @@ public class TestConfig {
 
 		t1.setUser(u1);
 		t2.setUser(u1);
-		t3.setUser(u2);
+		t3.setUser(u1);
 
-		u1.setTransactions(Arrays.asList(t1, t2));
+		u1.setTransactions(Arrays.asList(t1, t2,t3));
 		u2.setTransactions(Arrays.asList(t3));
 
 		userService.insert(u1);
