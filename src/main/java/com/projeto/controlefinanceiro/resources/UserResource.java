@@ -70,6 +70,12 @@ public class UserResource {
 	public List<Transaction> findUserTransactions(@PathVariable Integer id) {
 		return userService.findUserTransactions(id);
 	}
+
+	@GetMapping(value = "/{userId}/transactions/{transactionId}")
+	public Transaction findTransactionById(@PathVariable Integer userId, @PathVariable Integer transactionId) throws NotFoundException {
+		User user = userService.findById(userId);
+		return userService.findTransactionById(user, transactionId);
+	}
 	
 	// nested endpoint to create a transaction from a user
 	@CrossOrigin

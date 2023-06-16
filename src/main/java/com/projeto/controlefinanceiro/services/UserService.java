@@ -77,6 +77,7 @@ public class UserService {
 		// Atualize o valor do balance
 		Double transactionValue = transaction.getValue();
 		addOrWithdraw(user, -transactionValue);
+		userRepo.save(user);
 
 		// Exclua a transação
 		transactionRepo.delete(transaction);
@@ -92,7 +93,7 @@ public class UserService {
 		return transactionRepo.save(existingTransaction);
 	}
 
-	private Transaction findTransactionById(User user, Integer transactionId) throws NotFoundException {
+	public Transaction findTransactionById(User user, Integer transactionId) throws NotFoundException {
 		Optional<Transaction> optionalTransaction = user.getTransactions().stream()
 				.filter(transaction -> transaction.getId().equals(transactionId))
 				.findFirst();
@@ -121,13 +122,12 @@ public class UserService {
 	// if value is negative it removes from the balance and adds to expenses
 	private void addOrWithdraw(User user, Double value) {
 		if (value > 0) {
-			user.setBalance(user.getBalance() + value);
-			user.setRevenue(user.getRevenue() + value);
+			user.setBalance(user.getBalance() - value);
+			user.setRevenue(user.getRevenue() - value);
 		} else {
 			user.setBalance(user.getBalance() + value);
 			user.setExpenses(user.getExpenses() - value);
 		}
-		userRepo.save(user);
 	}
 
 	// find and delete a transaction in a list of transactions
