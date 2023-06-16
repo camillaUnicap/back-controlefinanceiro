@@ -112,7 +112,6 @@ public class UserService {
 	// the second is the receiver
 	private void updateData(User user, User usr) {
 		usr.setEmail(user.getEmail());
-		usr.setPassword(user.getPassword());
 		usr.setBalance(user.getBalance());
 		usr.setRevenue(user.getRevenue());
 		usr.setExpenses(user.getExpenses());
