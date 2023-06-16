@@ -1,10 +1,12 @@
 package com.projeto.controlefinanceiro.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.projeto.controlefinanceiro.repositories.TransactionRepository;
 import com.projeto.controlefinanceiro.repositories.UserRepository;
 import com.projeto.controlefinanceiro.services.exceptions.ObjectNotFoundException;
+import javassist.NotFoundException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,10 +70,41 @@ public class UserService {
 		return transactionRepo.save(transaction);
 	}
 
-	public void deleteTransaction(Integer userId, Integer transactionId) {
-		List<Transaction> transactions = findUserTransactions(userId);
-		findTransactionAndDelete(transactions, transactionId);
+	public void deleteTransaction(Integer userId, Integer transactionId) throws NotFoundException {
+		User user = findById(userId);
+		Transaction transaction = findTransactionById(user, transactionId);
+
+		// Atualize o valor do balance
+		Double transactionValue = transaction.getValue();
+		addOrWithdraw(user, -transactionValue);
+
+		// Exclua a transação
+		transactionRepo.delete(transaction);
 	}
+
+
+	public Transaction updateTransaction(Transaction transaction, Integer userId, Integer transactionId) throws NotFoundException {
+		User user = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
+		Transaction existingTransaction = findTransactionById(user, transactionId);
+
+		updateTransactionData(transaction, existingTransaction);
+
+		return transactionRepo.save(existingTransaction);
+	}
+
+	private Transaction findTransactionById(User user, Integer transactionId) throws NotFoundException {
+		Optional<Transaction> optionalTransaction = user.getTransactions().stream()
+				.filter(transaction -> transaction.getId().equals(transactionId))
+				.findFirst();
+
+		return optionalTransaction.orElseThrow(() -> new NotFoundException("Transaction not found with ID: " + transactionId));
+	}
+
+	private void updateTransactionData(Transaction newTransaction, Transaction existingTransaction) {
+		existingTransaction.setName(newTransaction.getName());
+		existingTransaction.setValue(newTransaction.getValue());
+	}
+
 
 	// copies a user's data to another, the first argument is the one to be copied,
 	// the second is the receiver
@@ -94,6 +127,7 @@ public class UserService {
 			user.setBalance(user.getBalance() + value);
 			user.setExpenses(user.getExpenses() - value);
 		}
+		userRepo.save(user);
 	}
 
 	// find and delete a transaction in a list of transactions

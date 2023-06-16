@@ -2,6 +2,7 @@ package com.projeto.controlefinanceiro.resources;
 
 import java.util.List;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -81,7 +82,12 @@ public class UserResource {
 	@CrossOrigin
 	@DeleteMapping(value = "/{id}/transactions/{transactionId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteTransaction(@PathVariable Integer id, @PathVariable Integer transactionId) {
+	public void deleteTransaction(@PathVariable Integer id, @PathVariable Integer transactionId) throws NotFoundException {
 		userService.deleteTransaction(id, transactionId);
+	}
+
+	@PutMapping("/users/{userId}/transactions/{transactionId}")
+	public Transaction updateTransaction(@RequestBody Transaction transaction, @PathVariable Integer userId, @PathVariable Integer transactionId) throws NotFoundException {
+		return userService.updateTransaction(transaction, userId, transactionId);
 	}
 }
