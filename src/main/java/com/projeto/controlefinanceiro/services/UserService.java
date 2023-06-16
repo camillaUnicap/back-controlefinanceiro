@@ -122,8 +122,8 @@ public class UserService {
 	// if value is negative it removes from the balance and adds to expenses
 	private void addOrWithdraw(User user, Double value) {
 		if (value > 0) {
-			user.setBalance(user.getBalance() - value);
-			user.setRevenue(user.getRevenue() - value);
+			user.setBalance(user.getBalance() + value);
+			user.setRevenue(user.getRevenue() + value);
 		} else {
 			user.setBalance(user.getBalance() + value);
 			user.setExpenses(user.getExpenses() - value);
