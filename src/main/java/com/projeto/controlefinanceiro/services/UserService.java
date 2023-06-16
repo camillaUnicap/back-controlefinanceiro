@@ -76,16 +76,17 @@ public class UserService {
 
 		// Atualize o valor do balance
 		Double transactionValue = transaction.getValue();
-		addOrWithdraw(user, -transactionValue);
+		removeOrWithdraw(user, transactionValue);
 		userRepo.save(user);
 
 		// Exclua a transação
 		transactionRepo.delete(transaction);
 	}
 
-
-	public Transaction updateTransaction(Transaction transaction, Integer userId, Integer transactionId) throws NotFoundException {
-		User user = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
+	public Transaction updateTransaction(Transaction transaction, Integer userId, Integer transactionId)
+			throws NotFoundException {
+		User user = userRepo.findById(userId)
+				.orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
 		Transaction existingTransaction = findTransactionById(user, transactionId);
 
 		updateTransactionData(transaction, existingTransaction);
@@ -98,14 +99,14 @@ public class UserService {
 				.filter(transaction -> transaction.getId().equals(transactionId))
 				.findFirst();
 
-		return optionalTransaction.orElseThrow(() -> new NotFoundException("Transaction not found with ID: " + transactionId));
+		return optionalTransaction
+				.orElseThrow(() -> new NotFoundException("Transaction not found with ID: " + transactionId));
 	}
 
 	private void updateTransactionData(Transaction newTransaction, Transaction existingTransaction) {
 		existingTransaction.setName(newTransaction.getName());
 		existingTransaction.setValue(newTransaction.getValue());
 	}
-
 
 	// copies a user's data to another, the first argument is the one to be copied,
 	// the second is the receiver
@@ -121,13 +122,11 @@ public class UserService {
 	// if value is positive it adds to balance and revenue
 	// if value is negative it removes from the balance and adds to expenses
 	private void addOrWithdraw(User user, Double value) {
-		if (value > 0) {
-			user.setBalance(user.getBalance() + value);
-			user.setRevenue(user.getRevenue() + value);
-		} else {
-			user.setBalance(user.getBalance() + value);
-			user.setExpenses(user.getExpenses() - value);
-		}
+		user.setBalance(user.getBalance() + value);
+	}
+
+	private void removeOrWithdraw(User user, Double value) {
+		user.setBalance(user.getBalance() - value);
 	}
 
 	// find and delete a transaction in a list of transactions
@@ -139,7 +138,7 @@ public class UserService {
 			}
 		}
 	}
-	
+
 	// encrypts a user's password using BCrypt
 	private String hashPassword(String plainTextPassword) {
 		return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
