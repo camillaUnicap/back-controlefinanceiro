@@ -43,7 +43,7 @@ public class TestConfig {
 
 		userService.insert(u1);
 		userService.insert(u2);
-		userService.insert(u3);s
+		userService.insert(u3);
 		transactionRepo.saveAll(Arrays.asList(t1, t2, t3));
 
 		return true;
