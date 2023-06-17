@@ -47,24 +47,23 @@ public class UserResource {
 	}
 
 	@CrossOrigin
-	@PostMapping
+	@PostMapping(value = "/create")
 	public User insert(@RequestBody User user) {
 		return userService.insert(user);
 	}
 
-	@PutMapping(value = "/{id}")
+	@PutMapping(value = "/{id}/edite")
 	public User update(@RequestBody User user, @PathVariable Integer id) {
 		return userService.update(user, id);
 	}
 	
 	@CrossOrigin
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = "/{id}/remove")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@PathVariable Integer id) {
 		userService.delete(id);
 	}
 
-	// nested endpoint that return all transaction from a user
 	@CrossOrigin
 	@GetMapping(value = "/{id}/transactions")
 	public List<Transaction> findUserTransactions(@PathVariable Integer id) {
@@ -77,22 +76,20 @@ public class UserResource {
 		return userService.findTransactionById(user, transactionId);
 	}
 	
-	// nested endpoint to create a transaction from a user
 	@CrossOrigin
-	@PostMapping(value = "/{id}/transactions")
+	@PostMapping(value = "/{id}/transaction")
 	public Transaction insertTransaction(@RequestBody Transaction transaction, @PathVariable Integer id) {
 		return userService.insertTransaction(transaction, id);
 	}
 	
-	// nested endpoint to delete a transaction from a user
 	@CrossOrigin
-	@DeleteMapping(value = "/{id}/transactions/{transactionId}")
+	@DeleteMapping(value = "/{id}/transaction/{transactionId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteTransaction(@PathVariable Integer id, @PathVariable Integer transactionId) throws NotFoundException {
 		userService.deleteTransaction(id, transactionId);
 	}
 
-	@PutMapping("/users/{userId}/transactions/{transactionId}")
+	@PutMapping("/{userId}/transaction/{transactionId}")
 	public Transaction updateTransaction(@RequestBody Transaction transaction, @PathVariable Integer userId, @PathVariable Integer transactionId) throws NotFoundException {
 		return userService.updateTransaction(transaction, userId, transactionId);
 	}
